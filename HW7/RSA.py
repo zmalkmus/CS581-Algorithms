@@ -19,13 +19,46 @@ def extended_gcd(a, b):
         y = x1
         return g, x, y
 
-def rsa(p, q, message_str):
+def miller_rabin(n, k=10):
+    import random
 
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0:
+        return False
+
+    r, s = 0, n - 1
+    while s % 2 == 0:
+        r += 1
+        s //= 2
+
+    for _ in range(k):
+        a = random.randint(2, n - 2)
+        x = pow(a, s, n)
+        if x == 1 or x == n - 1:
+            continue
+        for _ in range(r - 1):
+            x = pow(x, 2, n)
+            if x == n - 1:
+                break
+        else:
+            return False
+    return True
+
+def rsa(p, q, message_str):
     if p <= 1 or q <= 1:
         print("Both p and q must be greater than 1.")
         sys.exit(1)
     if p != 2 * q + 1:
         print("p must be equal to 2q + 1.")
+        sys.exit(1)
+    if not (miller_rabin(p)):
+        print("p is not prime.")
+        sys.exit(1)
+    if not (miller_rabin(q)):
+        print("q is not prime.")
         sys.exit(1)
 
     m = int.from_bytes(message_str.encode('utf-8'), byteorder='big')
