@@ -5,43 +5,46 @@
 - Python 3.x
 
 Required Python modules:
-- argparse
-- sys
-- time
-- requests (for fetching safe primes)
 
-Install the requests module via pip if you haven't already:
-
-    pip install requests
+- networkx
+- gurobipy
 
 ## Usage
 
-Run the script from the command line with different options:
+```
+python3 rsa.py p1 p2 m
+```
 
-### Encryption/Decryption Mode
+```
+python3 bron-kerbosch.py graph.txt
+```
 
-Provide the two prime numbers and the message to encode/decode. Note that the script enforces that:
-- Both p and q must be greater than 1.
-- p must equal 2q + 1 (i.e., p should be a safe prime based on q).
+```
+python3 ilp.py graph.txt
+```
 
-Example:
+## Results
 
-    python RSA.py <p> <q> "Your message here"
+![Part b runtime](plot/part2_plot.png)
 
-For example:
+## Testing
 
-    python RSA.py 23 11 "Hello, RSA!"
+To get a valid p and q pair
+```
+python3 rsa.py --generate
+```
 
-### Generate Safe Primes
+To run 10 tests and verify them
+```
+python3 rsa.py --test
+```
 
-Use the --gen_primes flag to fetch safe primes (p and q) from the online API:
+Generate a valid graph using networkx
+```
+python3 ilp.py --generate
+```
 
-    python RSA.py --gen_primes
-
-The output will display safe prime values for p and q.
-
-### Testing Mode
-
-Run the built-in test suite using the --test flag. This mode fetches safe primes and runs a number of RSA encryption/decryption cycles to ensure the algorithm works as expected:
-
-    python RSA.py --test
+Generate 10 graphs and test bk vs ilp
+```
+python3 ilp.py --test
+```

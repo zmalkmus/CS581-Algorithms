@@ -1,5 +1,6 @@
 import sys
 import argparse
+import random
 
 # ================================================================
 # RSA Encryption/Decryption
@@ -20,8 +21,6 @@ def extended_gcd(a, b):
         return g, x, y
 
 def miller_rabin(n, k=10):
-    import random
-
     if n <= 1:
         return False
     if n <= 3:
@@ -92,9 +91,7 @@ def rsa(p, q, message_str):
 # ===============================================================   
 # Prime Generation
 # ===============================================================
-# This prime generate works but is too slow for testing
-# import random
-# from sympy import isprime
+# This prime generate works but is too slow for testing a lot of primes
 
 # def generate_safe_prime(bit_length):
 #     while True:
@@ -108,9 +105,7 @@ def rsa(p, q, message_str):
 #             p = 2 * q_candidate + 1
 #             if p.bit_length() == bit_length and isprime(p):
 #                 return p
-# p_safe = generate_safe_prime(512)
-# print("Safe prime p =", p_safe)
-# print("q = (p-1)//2 =", (p_safe - 1)//2)
+
 
 def fetch_safe_primes(bit_length=2048):
     import requests
@@ -134,29 +129,57 @@ def fetch_safe_primes(bit_length=2048):
 # ================================================================
 def test_rsa(k=10, wait_time=1):
     import time
+    import csv
+    
+    results = []  # List to hold timing data for each iteration
 
-    for i in range(1, k+1):
+    for i in range(1, k + 1):
         primes = fetch_safe_primes()
         if not primes or 'p' not in primes or 'q' not in primes:
+            print(f"Skipping iteration {i}: safe primes not available")
             continue
 
         p = int(primes['p'])
         q = int(primes['q'])
         message_str = "Hello, RSA!"
 
+        # Measure the time taken by the rsa function
+        start = time.perf_counter()
         try:
             e, d, n, cipher_int, decrypted_str = rsa(p, q, message_str)
         except Exception as ex:
             raise Exception(f"RSA computation failed during iteration {i}: {ex}")
+        end = time.perf_counter()
+
+        duration = end - start  # Time taken for the RSA function call
 
         if decrypted_str != message_str:
             raise AssertionError(
                 f"RSA test failed during iteration {i}: decrypted '{decrypted_str}' does not match original '{message_str}'"
             )
 
+        # Append iteration number, duration and optionally the prime numbers to the results
+        results.append({
+            "Iteration": i,
+            "Duration": duration,
+            "p": p,
+            "q": q
+        })
+
+        # Pause between iterations
         time.sleep(wait_time)
 
-    print("All RSA tests passed successfully!")
+    # Save results to a CSV file
+    output_filename = "rsa_timings.csv"
+    if results:  # Check that we have at least one result
+        keys = results[0].keys()
+        with open(output_filename, "w", newline="") as output_file:
+            dict_writer = csv.DictWriter(output_file, keys)
+            dict_writer.writeheader()
+            dict_writer.writerows(results)
+        print(f"All RSA tests passed successfully! Results saved to {output_filename}")
+    else:
+        print("No valid results to save.")
 
 
 # ================================================================
