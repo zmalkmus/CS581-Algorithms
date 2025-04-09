@@ -29,7 +29,6 @@ def BK(G):
 # Maximum Clique with ILP
 # ================================================================
 def ILP(G):
-    # --- Model Initialization ---
     m = gp.Model("max_clique")
     m.setParam('OutputFlag', 1)
     m.setParam('Threads', 0)

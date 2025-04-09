@@ -131,7 +131,7 @@ def test_rsa(k=10, wait_time=1):
     import time
     import csv
 
-    results = []  # List to hold timing data for each iteration
+    results = []
 
     for i in range(1, k + 1):
         primes = fetch_safe_primes()
@@ -142,8 +142,6 @@ def test_rsa(k=10, wait_time=1):
         p = int(primes['p'])
         q = int(primes['q'])
         message_str = "Hello, RSA!"
-
-        # Measure the time taken by the rsa function
         start = time.perf_counter()
         try:
             e, d, n, cipher_int, decrypted_str = rsa(p, q, message_str)
@@ -151,27 +149,22 @@ def test_rsa(k=10, wait_time=1):
             raise Exception(f"RSA computation failed during iteration {i}: {ex}")
         end = time.perf_counter()
 
-        duration = end - start  # Time taken for the RSA function call
+        duration = end - start
 
         if decrypted_str != message_str:
             raise AssertionError(
                 f"RSA test failed during iteration {i}: decrypted '{decrypted_str}' does not match original '{message_str}'"
             )
-
-        # Append iteration number, duration and optionally the prime numbers to the results
         results.append({
             "Iteration": i,
             "Duration": duration,
             "p": p,
             "q": q
         })
-
-        # Pause between iterations
         time.sleep(wait_time)
 
-    # Save results to a CSV file
     output_filename = "rsa_timings.csv"
-    if results:  # Check that we have at least one result
+    if results:
         keys = results[0].keys()
         with open(output_filename, "w", newline="") as output_file:
             dict_writer = csv.DictWriter(output_file, keys)
