@@ -130,7 +130,7 @@ def fetch_safe_primes(bit_length=2048):
 def test_rsa(k=10, wait_time=1):
     import time
     import csv
-    
+
     results = []  # List to hold timing data for each iteration
 
     for i in range(1, k + 1):
@@ -187,7 +187,7 @@ def test_rsa(k=10, wait_time=1):
 # ================================================================
 def main():
     parser = argparse.ArgumentParser(description="RSA encryption/decryption")
-    parser.add_argument("--gen_primes", action="store_true", help="Generate safe primes")
+    parser.add_argument("--generate", action="store_true", help="Generate safe primes")
     parser.add_argument("--test", action="store_true", help="Run tests instead of normal execution")
     parser.add_argument("p", type=int, nargs="?", help="Prime number p")
     parser.add_argument("q", type=int, nargs="?", help="Prime number q")
@@ -195,7 +195,7 @@ def main():
 
     args = parser.parse_args()
 
-    if args.gen_primes:
+    if args.generate:
         primes = fetch_safe_primes(2048)
         print("p:", primes['p'])
         print("q:", primes['q'])
@@ -215,11 +215,11 @@ def main():
 
     e, d, n, cipher_int, decrypted_str = rsa(p, q, message_str)
 
-    print(e)
-    print(d)
-    print(message_str)
-    print(cipher_int)
-    print(decrypted_str)
+    print(">> ", e)
+    print(">> ", d)
+    print(">> ", message_str)
+    print(">> ", cipher_int)
+    print(">> ", decrypted_str)
 
 if __name__ == "__main__":
     main()
