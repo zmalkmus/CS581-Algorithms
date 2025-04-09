@@ -25,6 +25,8 @@ python3 ilp.py graph.txt
 
 ## Results
 
+Both algorithms were run on each graph 5 times. Gurobi was used with 16 cores on my local machine. 
+
 ![Part b runtime](plot/part2_plot.png)
 
 ## Testing
